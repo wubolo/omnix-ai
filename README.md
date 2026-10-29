@@ -4,16 +4,15 @@
 
 **Русский**
 
-AI Companion — настольный голосовой помощник с живым аватаром. Общайтесь с ним голосом, получайте ответы вслух и поручайте повседневные задачи за компьютером. Компаньон может работать с экраном и приложениями, запоминать важные для вас сведения, расширяться плагинами и подстраиваться под ваш микрофон, наушники и голос. Для важных действий предусмотрено подтверждение, а данные и настройки хранятся локально на вашем устройстве.
+AI Companion — настольный голосовой помощник с живым аватаром. Общайтесь с ним голосом, получайте ответы вслух и поручайте повседневные задачи за компьютером. Компаньон помогает работать с экраном и приложениями, запоминает полезные сведения, расширяется плагинами и позволяет выбрать микрофон, наушники и голос. Для важных действий требуется подтверждение; настройки и память хранятся на вашем устройстве.
 
 **English**
 
-AI Companion is a voice-first desktop assistant with an animated avatar. Talk naturally, hear spoken replies, and ask it to help with everyday tasks on your computer. It can work with your screen and apps, remember useful details, grow through plugins, and adapt to your microphone, speakers, and preferred voice. Important actions require your confirmation, while your settings and memory stay on your device.
+AI Companion is a voice-first desktop assistant with an animated avatar. Talk naturally, hear spoken replies, and ask it to help with everyday tasks on your computer. It can work with your screen and apps, remember useful details, grow through plugins, and adapt to your microphone, speakers, and preferred voice. Important actions require your confirmation, while settings and memory stay on your device.
 
-> 🎙️ Speak naturally · 👀 Screen-aware assistance · 🖥️ Desktop actions · 🧠 Local memory · 🧩 Extensible plugins
+> 🎙️ Natural voice chat · 👀 Screen-aware help · 🖥️ Desktop actions · 🧠 Personal memory · 🧩 Extensible plugins
 
----
-## ✨ Overview
+---## ✨ Overview
 
 AI Companion is a real-time voice AI assistant with a holographic avatar, lip-sync, local wake word, plugin system and full computer control. It hears you, sees your screen, speaks back and does things on your machine.
 
@@ -131,7 +130,7 @@ The main interface uses a translucent liquid-glass style and a bottom navigation
 
 ## 📦 Windows installer and portable app
 
-`packaging\build_installer.bat` builds `outputs\AICompanion-Setup.exe` with NSIS from the already-built portable executable. The portable `outputs\AICompanion.exe` can also be launched directly without installation. The installer is per-user and creates Start-menu / desktop shortcuts. API keys are kept in the local `config\api_keys.json` and are never embedded in either executable. Free, non-commercial redistribution only, with attribution (see `LICENSE`).
+`packaging\build_installer.bat` builds `outputs\AICompanion-Setup.exe` with NSIS from the already-built portable executable. The portable `outputs\AICompanion.exe` can also be launched directly without installation. The installer is per-user and creates Start-menu / desktop shortcuts. API keys are kept in the local `config\api_keys.json` and are never embedded in either executable.
 
 ## ⚡ Quick Start
 
@@ -220,14 +219,6 @@ AI Companion/
 
 ---
 
-## 🙏 Third-Party Assets
-
-| Asset | Source | Licence |
-| --- | --- | --- |
-| `core/face_model.obj` | [MediaPipe](https://github.com/google-ai-edge/mediapipe) canonical face model — 468 vertices of measured human face geometry | Apache License 2.0 |
-
----
-
 ## 🔒 Your Data
 
 Everything stays on your machine. There is no AI Companion server, no telemetry and no account.
@@ -243,21 +234,4 @@ All three are listed in `.gitignore`, so a fork or a pull request cannot leak th
 Your voice is streamed to Google's Gemini Live API while a session is open; that is the one thing that leaves your computer, and it stops when you mute or close the app.
 
 ---
-
-## ⚠️ License
-
-Personal and non-commercial use only.
-Licensed under **[Creative Commons BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)**.
-
----
-
-## 👤 Connect with the Creator
-
-Engineered by a developer building a real-world AI Companion-style assistant.
-⭐ **Star the repository to support the journey to AI Companion100.**
-
-| Platform | Link |
-| --- | --- |
-| YouTube | [@FatihMakes](https://www.youtube.com/@FatihMakes) |
-| Instagram | [@fatihmakes](https://www.instagram.com/fatihmakes) |
 
