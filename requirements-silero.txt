@@ -1,0 +1,3 @@
+# OPTIONAL fallback voice: Silero (needs PyTorch, about 1 GB more on disk).
+torch>=2.2,<3
+silero-vad>=5,<7

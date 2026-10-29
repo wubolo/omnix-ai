@@ -1,0 +1,39 @@
+﻿AI Assistant — free, non-commercial software
+
+English
+-------
+Based on "AI Companion" by FatihMakes, licensed under Creative Commons
+Attribution-NonCommercial 4.0 (CC BY-NC 4.0): free for personal use and free
+redistribution with attribution; commercial use is not permitted. The full
+licence text is installed with the app (app\LICENSE).
+
+During installation this program downloads, from their official servers:
+Python (python.org / nuget.org), the Python libraries listed in
+requirements.txt (PyPI), and Russian Piper voices
+(huggingface.co/rhasspy/piper-voices; each voice has its own licence, see its
+model card). If Piper cannot be installed, the Silero voice is used instead
+(non-commercial terms). About 1.5 GB in total.
+
+If you choose the OpenAI or Fish Audio voice in Settings, the text the assistant speaks is sent to
+that service (your own key is required).
+
+You need your own Google Gemini API key (asked on first launch). Your voice is
+sent to Google's Gemini Live API while a session is open.
+
+Русский
+-------
+Основано на «AI Companion» автора FatihMakes, лицензия CC BY-NC 4.0: можно
+пользоваться и бесплатно распространять с указанием автора; коммерческое
+использование запрещено. Полный текст лицензии устанавливается вместе с
+программой (app\LICENSE).
+
+При установке программа скачивает с официальных серверов Python, библиотеки
+из requirements.txt (PyPI) и русские голоса Piper (huggingface.co/rhasspy/piper-voices;
+у каждого голоса своя лицензия, смотри карточку модели). Если Piper не встанет,
+будет голос Silero (некоммерческие условия). Всего около 1,5 ГБ, нужен интернет.
+
+Если выбрать голос OpenAI или Fish Audio, текст, который произносит ассистент, отправляется в
+этот сервис (нужен твой собственный ключ).
+
+Нужен собственный ключ Google Gemini API (спросит при первом запуске).
+Твой голос отправляется в Gemini Live API Google, пока сессия открыта.

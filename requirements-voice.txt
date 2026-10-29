@@ -1,0 +1,4 @@
+# Local voice (small, no PyTorch). Install together with the main file:
+#   pip install -r requirements.txt -r requirements-voice.txt
+piper-tts>=1.2,<2             # Piper: offline Russian voices on onnxruntime
+webrtcvad-wheels>=2.0.14,<3   # tiny speech detector: background noise no longer opens the mic

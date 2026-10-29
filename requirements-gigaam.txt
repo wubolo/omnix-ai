@@ -1,0 +1,9 @@
+# Optional local Russian speech recognition with GigaAM-v3.
+# Install the CPU-only PyTorch wheels first to avoid downloading CUDA runtimes.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.6.0+cpu
+torchaudio==2.6.0+cpu
+gigaam @ git+https://github.com/salute-developers/GigaAM.git@7447938d791c4f3e643386ee22c33777004293a5
+sentencepiece==0.2.0
+# Streaming 48 kHz DeepFilterNet Rust runtime with prebuilt Windows wheels.
+deepfilternet-rs==0.1.1
