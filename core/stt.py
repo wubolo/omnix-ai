@@ -1,5 +1,5 @@
 """
-Speech-to-Text engines for AI Companion.
+Speech-to-Text engines for OMNIX AI.
 
 Whisper  – offline transcription via faster-whisper (VAD-buffered)
 Vosk     – offline streaming transcription (lighter)

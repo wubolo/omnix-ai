@@ -359,7 +359,7 @@ def _load_system_prompt() -> str:
         return PROMPT_PATH.read_text(encoding="utf-8")
     except Exception:
         return (
-            "You are AI Companion, a voice AI assistant. "
+            "You are OMNIX AI, a voice AI assistant. "
             "Be concise, direct, and always use the provided tools to complete tasks. "
             "Never simulate or guess results — always call the appropriate tool."
         )
@@ -468,7 +468,7 @@ TOOL_DECLARATIONS = [
         "name": "manage_monitor",
         "description": (
             "Add, remove, or list background monitoring topics. "
-            "AI Companion checks these topics once a day and alerts the user when there is a new development. "
+            "OMNIX AI checks these topics once a day and alerts the user when there is a new development. "
             "Use 'add' when the user says 'monitor X', 'track X', 'follow X'. "
             "Use 'remove' when the user says 'stop monitoring X'. "
             "Use 'list' when the user asks what is being monitored. "
@@ -509,7 +509,7 @@ TOOL_DECLARATIONS = [
         "description": (
             "Shuts down the assistant completely. "
             "Call this when the user expresses intent to end the conversation, "
-            "close the assistant, say goodbye, or stop AI Companion. "
+            "close the assistant, say goodbye, or stop OMNIX AI. "
             "The user can say this in ANY language."
         ),
         "parameters": {
@@ -769,7 +769,7 @@ class AICompanionLive:
             try:
                 self.set_push_to_talk(True)
             except Exception as e:
-                print(f"[AI Companion] ⚠ Push-to-talk unavailable: {e}")
+                print(f"[OMNIX AI] ⚠ Push-to-talk unavailable: {e}")
         # UI control surface for the Wake Word settings section.
         self.ui.wake_is_ready    = wake_is_ready          # () -> bool
         self.ui.wake_get_state   = self._wake_state       # () -> dict
@@ -869,7 +869,7 @@ class AICompanionLive:
 
     def plugin_say(self, instruction: str) -> None:
         """
-        Thread-safe speech channel for plugins: lets a plugin ask AI Companion to
+        Thread-safe speech channel for plugins: lets a plugin ask OMNIX AI to
         say something short WHILE its run() is still executing (plugins block
         their executor thread, so they can't speak through the tool response
         until they finish). The instruction is injected into the Live session
@@ -1081,7 +1081,7 @@ class AICompanionLive:
             pass
 
     def interrupt(self) -> None:
-        """Stop AI Companion mid-speech: drain queued audio and open mic immediately."""
+        """Stop OMNIX AI mid-speech: drain queued audio and open mic immediately."""
         self._interrupted = True
         self._tts_generation += 1
         if self._tts_text_queue:
@@ -1101,7 +1101,7 @@ class AICompanionLive:
                 except Exception:
                     break
             if drained:
-                print(f"[AI Companion] ✋ Interrupted — {drained} audio chunks discarded")
+                print(f"[OMNIX AI] ✋ Interrupted — {drained} audio chunks discarded")
         self.set_speaking(False)
         # The words we were about to mouth are never going to be spoken now.
         self._visemes.reset()
@@ -1161,10 +1161,12 @@ class AICompanionLive:
         # Load customization from config
         try:
             _cfg = json.loads(open(API_CONFIG_PATH, encoding="utf-8").read())
-            self._asst_name = (_cfg.get("assistant_name") or "AI Companion").strip()
+            self._asst_name = (_cfg.get("assistant_name") or "OMNIX AI").strip()
+            if self._asst_name.casefold() == "ai companion":
+                self._asst_name = "OMNIX AI"
             _user_name = (_cfg.get("user_name") or "").strip()
         except Exception:
-            self._asst_name = "AI Companion"
+            self._asst_name = "OMNIX AI"
             _user_name = ""
 
         memory     = load_memory()
@@ -1257,7 +1259,7 @@ class AICompanionLive:
                 handle=self._resume_handle
             ),
             # Sliding-window compression: session never dies from a full context
-            # window — AI Companion can stay in one conversation for hours
+            # window — OMNIX AI can stay in one conversation for hours
             context_window_compression=types.ContextWindowCompressionConfig(
                 sliding_window=types.SlidingWindow(),
             ),
@@ -1333,7 +1335,7 @@ class AICompanionLive:
         name = fc.name
         args = dict(fc.args or {})
 
-        print(f"[AI Companion] 🔧 {name}  {args}")
+        print(f"[OMNIX AI] 🔧 {name}  {args}")
         self.ui.set_state("THINKING")
 
 
@@ -1495,7 +1497,7 @@ class AICompanionLive:
         if not self.ui.muted:
             self.ui.set_state("LISTENING")
 
-        print(f"[AI Companion] 📤 {name} → {str(result)[:80]}")
+        print(f"[OMNIX AI] 📤 {name} → {str(result)[:80]}")
 
         # A tool that declared itself NON_BLOCKING also says when its answer may
         # re-enter the conversation. Without this the model finishes whatever it
@@ -1654,7 +1656,7 @@ class AICompanionLive:
                 print(f"[STT] Transcription/send error: {exc}")
                 self.ui.write_log(f"ERR: Whisper transcription failed: {exc}")
     async def _listen_audio(self):
-        print("[AI Companion] 🎤 Mic started")
+        print("[OMNIX AI] 🎤 Mic started")
         loop = asyncio.get_event_loop()
 
         # Optional streaming DeepFilterNet enhancement. Model loading is kept off
@@ -1671,7 +1673,7 @@ class AICompanionLive:
         def _process_mic_frame(indata, frames, time_info, status):
             # ── Wake-word gate ───────────────────────────────────────────────
             # While asleep, the mic audio NEVER goes to Gemini (nothing is
-            # streamed, so AI Companion can't respond to speech not addressed to it and
+            # streamed, so OMNIX AI can't respond to speech not addressed to it and
             # nothing leaves the machine). Frames are instead handed to the local
             # detector, which runs its model in ITS OWN thread — the cost here is
             # only a queue push, so the audio path is never slowed. When wake word
@@ -1685,16 +1687,16 @@ class AICompanionLive:
                 ai_companion_speaking = self._is_speaking
 
             # ── Barge-in ─────────────────────────────────────────────────────
-            # While AI Companion talks the mic is not streamed, but it is still worth
+            # While OMNIX AI talks the mic is not streamed, but it is still worth
             # listening to locally: if the user starts speaking, cut the answer
             # short the way a person would stop when interrupted.
             #
-            # The whole difficulty is echo — on speakers the mic hears AI Companion.
+            # The whole difficulty is echo — on speakers the mic hears OMNIX AI.
             # So the test is not "is the mic loud" but "is the mic louder than
             # the echo of what we are playing right now", sustained long enough
             # that a cough or a keystroke cannot trigger it.
             if ai_companion_speaking:
-                # Nothing is streamed while AI Companion talks.
+                # Nothing is streamed while OMNIX AI talks.
                 #
                 # Interrupting by voice used to live here: `EchoGuard` can pick a
                 # user out from under our own echo, and `core/echo.py` still does
@@ -1880,7 +1882,7 @@ class AICompanionLive:
             _mic_name = get_input_device()
             _mic_dev  = audio_devices.resolve(_mic_name, "input")
             if _mic_dev is not None:
-                print(f"[AI Companion] 🎤 Input device: {_mic_name}")
+                print(f"[OMNIX AI] 🎤 Input device: {_mic_name}")
                 self.ui.write_log(f"SYS: Микрофон: {_mic_name}.")
             elif _mic_name:
                 self.ui.write_log(
@@ -1895,18 +1897,18 @@ class AICompanionLive:
                 # mean the assistant cannot hear at all.
                 if _mic_dev is None:
                     raise
-                print(f"[AI Companion] ⚠️  Mic '{_mic_name}' failed: {_e} — using default")
+                print(f"[OMNIX AI] ⚠️  Mic '{_mic_name}' failed: {_e} — using default")
                 self.ui.write_log(
                     f"SYS: Microphone '{_mic_name}' unavailable — using system default."
                 )
                 _mic_stream = _open_mic(None)
 
             with _mic_stream:
-                print("[AI Companion] 🎤 Mic stream open")
+                print("[OMNIX AI] 🎤 Mic stream open")
                 while True:
                     await asyncio.sleep(0.1)
         except Exception as e:
-            print(f"[AI Companion] ❌ Mic: {e}")
+            print(f"[OMNIX AI] ❌ Mic: {e}")
             raise
         finally:
             if noise_stop is not None:
@@ -1949,7 +1951,7 @@ class AICompanionLive:
         )
 
         if self._vision_cam_active:
-            # Camera: stay busy until AI Companion has finished speaking the answer,
+            # Camera: stay busy until OMNIX AI has finished speaking the answer,
             # then close the preview.
             self._vision_cam_active    = False
             self._vision_close_pending = True
@@ -1958,7 +1960,7 @@ class AICompanionLive:
         return True
 
     async def _receive_audio(self):
-        print("[AI Companion] 👂 Recv started")
+        print("[OMNIX AI] 👂 Recv started")
         out_buf, in_buf = [], []
         out_history: list[str] = []
         native_audio = bytearray()
@@ -1979,7 +1981,7 @@ class AICompanionLive:
                     if _sru is not None:
                         if getattr(_sru, "resumable", False) and getattr(_sru, "new_handle", None):
                             if self._resume_handle is None:
-                                print("[AI Companion] 🔗 Session resumption armed")
+                                print("[OMNIX AI] 🔗 Session resumption armed")
                             self._resume_handle = _sru.new_handle
 
                     if response.data:
@@ -2153,7 +2155,7 @@ class AICompanionLive:
                     if response.tool_call:
                         fn_responses = []
                         for fc in response.tool_call.function_calls:
-                            print(f"[AI Companion] 📞 {fc.name}")
+                            print(f"[OMNIX AI] 📞 {fc.name}")
                             fr = await self._execute_tool(fc)
                             fn_responses.append(fr)
                         await self.session.send_tool_response(
@@ -2161,18 +2163,18 @@ class AICompanionLive:
                         )
                         await self._flush_pending_vision()
         except Exception as e:
-            print(f"[AI Companion] ❌ Recv: {e}")
+            print(f"[OMNIX AI] ❌ Recv: {e}")
             traceback.print_exc()
             raise
 
     async def _play_audio(self):
-        print("[AI Companion] 🔊 Play started")
+        print("[OMNIX AI] 🔊 Play started")
 
         _spk_name = get_output_device()
         _spk_dev  = audio_devices.resolve(_spk_name, "output")
         output_rate = audio_devices.stream_rate(_spk_dev, "output")
         if _spk_dev is not None:
-            print(f"[AI Companion] 🔊 Output device: {_spk_name}")
+            print(f"[OMNIX AI] 🔊 Output device: {_spk_name}")
             self.ui.write_log(f"SYS: Наушники/колонки: {_spk_name}.")
         elif _spk_name:
             self.ui.write_log(
@@ -2198,7 +2200,7 @@ class AICompanionLive:
             # cost the user their voice. Fall back to the default and say so.
             if _spk_dev is None:
                 raise
-            print(f"[AI Companion] ⚠️  Output device '{_spk_name}' failed: {_e} — using default")
+            print(f"[OMNIX AI] ⚠️  Output device '{_spk_name}' failed: {_e} — using default")
             self.ui.write_log(
                 f"WRN: Устройство вывода «{_spk_name}» не открылось; использую системный выход."
             )
@@ -2213,7 +2215,7 @@ class AICompanionLive:
             lat = float(getattr(stream, "latency", 0.0) or 0.0)
             if 0.0 < lat < 1.0:
                 self._out_latency = lat
-            print(f"[AI Companion] 🔊 Output latency {self._out_latency*1000:.0f} ms "
+            print(f"[OMNIX AI] 🔊 Output latency {self._out_latency*1000:.0f} ms "
                   f"→ echo tail {(self._out_latency + _TAIL_MARGIN)*1000:.0f} ms")
         except Exception:
             pass
@@ -2248,7 +2250,7 @@ class AICompanionLive:
                     except asyncio.QueueEmpty:
                         break
 
-                # Drive the HUD waveform and the avatar's mouth from AI Companion's
+                # Drive the HUD waveform and the avatar's mouth from OMNIX AI's
                 # own voice. The batch is up to 200 ms long, so we hand over a
                 # *schedule* of 20 ms viseme frames instead of a single averaged
                 # level and let the HUD play it out in step with the audio.
@@ -2314,7 +2316,7 @@ class AICompanionLive:
                 except (RuntimeError, asyncio.CancelledError):
                     break   # executor shutting down — exit cleanly
         except Exception as e:
-            print(f"[AI Companion] ❌ Play: {e}")
+            print(f"[OMNIX AI] ❌ Play: {e}")
             raise
         finally:
             self.set_speaking(False)
@@ -2470,7 +2472,7 @@ class AICompanionLive:
             turns={"role": "user", "parts": [{"text": p1}]},
             turn_complete=True,
         )
-        print("[AI Companion] Briefing phase 1 (greeting) sent.")
+        print("[OMNIX AI] Briefing phase 1 (greeting) sent.")
 
         # ── Phase 2: fire as soon as Phase 1 audio is done ───────────────────
         async def _deliver_news():
@@ -2533,10 +2535,10 @@ class AICompanionLive:
                     turns={"role": "user", "parts": [{"text": p2}]},
                     turn_complete=True,
                 )
-                print("[AI Companion] Briefing phase 2 (news) sent.")
+                print("[OMNIX AI] Briefing phase 2 (news) sent.")
             except Exception as e:
                 print(f"[Briefing] Phase 2 error: {e}")
-                print(f"[AI Companion] Briefing phase 2 failed: {e}")
+                print(f"[OMNIX AI] Briefing phase 2 failed: {e}")
                 self.ui.write_log("SYS: Could not fetch the news for the briefing.")
 
         asyncio.create_task(_deliver_news())
@@ -2611,7 +2613,7 @@ class AICompanionLive:
         await asyncio.sleep(300)          # wait 5 min after startup before first check
         while True:
             if self.session and self._awake:
-                # Don't interrupt if user spoke recently or AI Companion is mid-sentence
+                # Don't interrupt if user spoke recently or OMNIX AI is mid-sentence
                 with self._speaking_lock:
                     speaking = self._is_speaking
                 recent_speech = (time.monotonic() - self._last_user_speech) < 30
@@ -2631,7 +2633,7 @@ class AICompanionLive:
                                 turns={"role": "user", "parts": [{"text": msg}]},
                                 turn_complete=True,
                             )
-                            print("[AI Companion] Monitor alert sent.")
+                            print("[OMNIX AI] Monitor alert sent.")
                             await asyncio.sleep(6)   # gap between consecutive alerts
                     except Exception as e:
                         print(f"[Monitor] ⚠️ Background check error: {e}")
@@ -2674,7 +2676,7 @@ class AICompanionLive:
                     turns={"role": "user", "parts": [{"text": prompt}]},
                     turn_complete=True,
                 )
-                print("[AI Companion] Proactive check-in.")
+                print("[OMNIX AI] Proactive check-in.")
             except Exception as e:
                 print(f"[Proactive] ⚠️ {e}")
 
@@ -2720,7 +2722,7 @@ class AICompanionLive:
                     await asyncio.sleep(0.1)
                 if self.session:
                     # A remote command is deliberate control and the phone user
-                    # has no desktop WAKE button — so it wakes AI Companion if asleep.
+                    # has no desktop WAKE button — so it wakes OMNIX AI if asleep.
                     if self._wake_enabled and not self._awake:
                         self.wake(reason="remote command")
                     await self.session.send_client_content(
@@ -2852,7 +2854,7 @@ class AICompanionLive:
 
         while True:
             try:
-                print("[AI Companion] Connecting...")
+                print("[OMNIX AI] Connecting...")
                 self.ui.set_state("THINKING")
                 # Pick the rung to open the conversation on. A model resting
                 # off a quota limit is skipped; the name is published back to
@@ -2860,7 +2862,7 @@ class AICompanionLive:
                 global LIVE_MODEL
                 LIVE_MODEL = _gemini.live_model()
                 live_model = LIVE_MODEL
-                print(f"[AI Companion] Live model: {live_model}")
+                print(f"[OMNIX AI] Live model: {live_model}")
 
                 _resumed_with = self._resume_handle is not None
                 config = self._build_config()
@@ -2892,7 +2894,7 @@ class AICompanionLive:
                     self._vision_last_time     = 0.0
                     self._interrupted          = False
 
-                    print("[AI Companion] Connected.")
+                    print("[OMNIX AI] Connected.")
                     if _resumed_with:
                         # Say it plainly: the difference between "it reconnected"
                         # and "it reconnected and still knows what we were doing"
@@ -2905,11 +2907,11 @@ class AICompanionLive:
                         self._ensure_wake_detector()
                         self._awake = False
                         self.ui.set_state("SLEEPING")
-                        self.ui.write_log("SYS: AI Companion online — sleeping. Say 'Hey Jarvis' to wake me.")
+                        self.ui.write_log("SYS: OMNIX AI online — sleeping. Say 'Hey Jarvis' to wake me.")
                     else:
                         self._awake = True
                         self.ui.set_state("LISTENING")
-                        self.ui.write_log("SYS: AI Companion online.")
+                        self.ui.write_log("SYS: OMNIX AI online.")
 
                     if self._dashboard:
                         await self._dashboard.broadcast({"type": "status", "state": "active"})
@@ -2949,7 +2951,7 @@ class AICompanionLive:
                 # Voluntary reconnect (voice change) — not an error. Rebuild the
                 # session immediately with no backoff and no scary logs.
                 if _is_reconnect_signal(e):
-                    print("[AI Companion] Voluntary reconnect requested.")
+                    print("[OMNIX AI] Voluntary reconnect requested.")
                     if not _keep_context_of(e):
                         # A deliberate clean slate (voice change) — drop the
                         # handle so the next connect really does start empty.
@@ -2969,19 +2971,19 @@ class AICompanionLive:
                     or "INVALID_ARGUMENT" in str(e)
                     or "NOT_FOUND" in str(e)
                 ):
-                    print("[AI Companion] 🔗 Resumption handle rejected — starting a fresh session")
+                    print("[OMNIX AI] 🔗 Resumption handle rejected — starting a fresh session")
                     self.ui.write_log("SYS: Could not restore the conversation — starting fresh.")
                     self._resume_handle = None
                     self._conn_backoff = 0
                     continue
 
                 err_str = str(e)
-                print(f"[AI Companion] Error ({type(e).__name__}): {e}")
+                print(f"[OMNIX AI] Error ({type(e).__name__}): {e}")
                 traceback.print_exc()
 
                 # Out of quota, or this model is not available to this key —
                 # step down the ladder and reconnect straight away. This is the
-                # difference between "AI Companion is quieter today" and "AI Companion does
+                # difference between "OMNIX AI is quieter today" and "OMNIX AI does
                 # not start today": one model means one daily limit, and the
                 # limit always arrives mid-conversation.
                 if _gemini.note_live_failure(live_model, err_str):
@@ -3022,7 +3024,7 @@ class AICompanionLive:
                     or "thinking" in err_str.lower()
                 ):
                     self._tuned_live = False
-                    print("[AI Companion] Live tuning rejected — reconnecting without it.")
+                    print("[OMNIX AI] Live tuning rejected — reconnecting without it.")
                     continue
 
                 # Proactive audio rejected by the server (preview API drift) —
@@ -3046,7 +3048,7 @@ class AICompanionLive:
                     self.ui.prompt_reconfig()
                     while not self.ui._win._ready:
                         await asyncio.sleep(1)
-                    print("[AI Companion] New API key saved — reconnecting...")
+                    print("[OMNIX AI] New API key saved — reconnecting...")
                     _conn_backoff = 3
                     continue
 
@@ -3077,7 +3079,7 @@ class AICompanionLive:
                 await self._dashboard.broadcast({"type": "status", "state": "sleeping"})
 
             delay = getattr(self, "_conn_backoff", 3)
-            print(f"[AI Companion] Reconnecting in {delay}s...")
+            print(f"[OMNIX AI] Reconnecting in {delay}s...")
             await asyncio.sleep(delay)
 
 def main():

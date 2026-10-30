@@ -21,7 +21,7 @@ class Proactive:
     def stop(self):
         self._work.stop(); self._tick.stop()
 
-    def notify(self, text, title="AI Companion"):
+    def notify(self, text, title="OMNIX AI"):
         self.tray.showMessage(title, text, QSystemTrayIcon.MessageIcon.Information, 8000)
 
     def remind_in(self, minutes, text):

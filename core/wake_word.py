@@ -1,5 +1,5 @@
 """
-Local wake-word detection for AI Companion ("Hey Jarvis").
+Local wake-word detection for OMNIX AI ("Hey Jarvis").
 
 Design goals:
   • ZERO cost when the feature is off — openwakeword is imported ONLY inside

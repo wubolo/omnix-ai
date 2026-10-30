@@ -43,7 +43,7 @@ class _Server:
         )
         self.request("initialize", {
             "protocolVersion": PROTOCOL, "capabilities": {},
-            "clientInfo": {"name": "AI Companion", "version": "1.0"}}, timeout)
+            "clientInfo": {"name": "OMNIX AI", "version": "1.0"}}, timeout)
         self._send({"jsonrpc": "2.0", "method": "notifications/initialized"})
         self.tools = self.request("tools/list", {}, timeout).get("tools", [])
 

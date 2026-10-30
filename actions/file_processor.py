@@ -1,5 +1,5 @@
 """
-file_processor.py — AI Companion Universal File Processor
+file_processor.py — OMNIX AI Universal File Processor
 
 Supported types:
   image   → describe, ocr, resize, convert, compress, crop

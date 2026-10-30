@@ -39,7 +39,7 @@ from PyQt6.QtGui import (
 # Video playback for the HUD. Part of PyQt6, so it costs no new dependency —
 # but the multimedia plugins are a separate piece of the Qt install and can be
 # absent on a stripped-down system, so a failure here disables one feature
-# rather than stopping AI Companion from starting.
+# rather than stopping OMNIX AI from starting.
 try:
     from PyQt6.QtMultimedia import QAudioOutput, QMediaPlayer
     from PyQt6.QtMultimediaWidgets import QGraphicsVideoItem
@@ -75,15 +75,18 @@ API_FILE   = CONFIG_DIR / "api_keys.json"
 def _read_full_config() -> dict:
     """Read api_keys.json config dict. Returns {} on any error."""
     try:
-        return json.loads(API_FILE.read_text(encoding="utf-8"))
+        data = json.loads(API_FILE.read_text(encoding="utf-8"))
+        if str(data.get("assistant_name", "")).strip().casefold() == "ai companion":
+            data["assistant_name"] = APP_VERSION
+        return data
     except Exception:
         return {}
 
 
 # Single source of truth for the release name — the window title, the header
 # badge and the readme must never disagree again.
-APP_VERSION  = "AI Companion"
-APP_PROTOCOL = APP_VERSION.split()[-1]
+APP_VERSION  = "OMNIX AI"
+APP_PROTOCOL = "OMNIX"
 
 _DEFAULT_W, _DEFAULT_H = 1280, 820
 _MIN_W,     _MIN_H     = 1040, 680
@@ -403,7 +406,7 @@ class _SysMetrics:
 _metrics = _SysMetrics()
 
 class HudCanvas(QWidget):
-    def __init__(self, face_path: str, assistant_name: str = "AI Companion", parent=None):
+    def __init__(self, face_path: str, assistant_name: str = "OMNIX AI", parent=None):
         super().__init__(parent)
         self.setAttribute(Qt.WidgetAttribute.WA_OpaquePaintEvent)
         self.setMinimumSize(300, 300)
@@ -602,7 +605,7 @@ class HudCanvas(QWidget):
         dt = now - self._step_t
         self._step_t = now
         # Integrated, not derived from absolute time: multiplying wall-clock by
-        # a rate that changes with state jumps the rings the instant AI Companion
+        # a rate that changes with state jumps the rings the instant OMNIX AI
         # starts talking. Same lesson the head's sway taught.
         self._core_phase += min(0.10, max(0.0, dt))
 
@@ -824,7 +827,7 @@ class HudCanvas(QWidget):
         p.drawEllipse(QRectF(cx - inner, cy - inner, inner * 2, inner * 2))
 
         # 9. The name, sized from the string rather than from the radius alone:
-        #    "AI Companion" and a name someone renamed to "MAX" are very
+        #    "OMNIX AI" and a name someone renamed to "MAX" are very
         #    different widths, and a fixed fraction of r spills one of them past
         #    the ring it is supposed to sit inside.
         name = self._assistant_name or ""
@@ -917,7 +920,7 @@ class HudCanvas(QWidget):
         p.drawText(QRectF(0, sy, W, 26), Qt.AlignmentFlag.AlignCenter, txt)
 
         # waveform — reacts to the real audio level (mic while listening,
-        # AI Companion's own voice while speaking). Falls back to a gentle idle
+        # OMNIX AI's own voice while speaking). Falls back to a gentle idle
         # ripple when there's no sound. _amp_disp is the smoothed 0–1 level.
         wy = sy + 30
         N, bw = 36, 8
@@ -1037,7 +1040,7 @@ class LogWidget(QTextEdit):
         self._text    = ""
         self._pos     = 0
         self._tag     = "sys"
-        self._ai_name_lc = "ai companion"   # updated when assistant name changes
+        self._ai_name_lc = "omnix ai"   # updated when assistant name changes
         self._tmr = QTimer(self)
         self._tmr.timeout.connect(self._step)
         self._sig.connect(self._enqueue)
@@ -1060,7 +1063,7 @@ class LogWidget(QTextEdit):
         tl = self._text.lower()
         _ai_pfx = f"{self._ai_name_lc}:"
         if   tl.startswith("you:"):                              self._tag = "you"
-        elif tl.startswith(_ai_pfx) or tl.startswith("ai companion:"): self._tag = "ai"
+        elif tl.startswith(_ai_pfx) or tl.startswith("omnix ai:"): self._tag = "ai"
         elif tl.startswith("file:"):                             self._tag = "file"
         elif "err" in tl:                                        self._tag = "err"
         else:                                                    self._tag = "sys"
@@ -1290,7 +1293,7 @@ class FileDropZone(QWidget):
 
     def _browse(self):
         path, _ = QFileDialog.getOpenFileName(
-            self, "Select a file for AI Companion", str(Path.home()),
+            self, "Select a file for OMNIX AI", str(Path.home()),
             "All Files (*.*);;"
             "Images (*.jpg *.jpeg *.png *.gif *.webp *.bmp *.svg);;"
             "Documents (*.pdf *.docx *.txt *.md *.pptx);;"
@@ -1516,7 +1519,7 @@ class SetupOverlay(QWidget):
             return w
 
         layout.addWidget(_lbl("◈  INITIALISATION REQUIRED", 13, True))
-        layout.addWidget(_lbl("Configure AI Companion. before first boot.", 9, color=C.PRI_DIM))
+        layout.addWidget(_lbl("Configure OMNIX AI before first launch.", 9, color=C.PRI_DIM))
         layout.addSpacing(6)
 
         sep = QFrame(); sep.setFrameShape(QFrame.Shape.HLine)
@@ -1712,7 +1715,7 @@ class CustomizeOverlay(QWidget):
     saved = pyqtSignal(str, str, str, str)   # assistant_name, user_name, ui_color, voice
     _OW, _OH = 400, 588
 
-    def __init__(self, assistant_name="AI Companion", user_name="",
+    def __init__(self, assistant_name="OMNIX AI", user_name="",
                  ui_color=DEFAULT_UI_COLOR, voice="", parent=None):
         super().__init__(parent)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
@@ -1921,7 +1924,7 @@ class CustomizeOverlay(QWidget):
         self.hide()
 
     def _save(self):
-        name = self._name_input.text().strip() or "AI Companion"
+        name = self._name_input.text().strip() or "OMNIX AI"
         user = self._user_input.text().strip()
         self.saved.emit(name, user, self._sel_color or DEFAULT_UI_COLOR, self._sel_voice)
         self.hide()
@@ -2141,11 +2144,11 @@ class ConfirmBanner(_HudOverlay):
 
 
 class AudioDeviceOverlay(_HudOverlay):
-    """Choose which microphone AI Companion listens to and which speakers it uses.
+    """Choose which microphone OMNIX AI listens to and which speakers it uses.
 
     Both audio streams used to open with no `device=` at all, so they always
     took the OS default — which on Windows moves by itself the moment a headset
-    is plugged in. 'AI Companion can't hear me' is usually 'AI Companion is listening to the
+    is plugged in. 'OMNIX AI can't hear me' is usually 'OMNIX AI is listening to the
     webcam'."""
 
     picked = pyqtSignal()      # emitted after Apply, when something changed
@@ -2307,7 +2310,7 @@ class AudioDeviceOverlay(_HudOverlay):
 
 
 class MemoryOverlay(_HudOverlay):
-    """Everything AI Companion has stored about you, and when it learned it.
+    """Everything OMNIX AI has stored about you, and when it learned it.
 
     Memory used to be a 2200-character store that deleted its oldest entries
     when full and mentioned it only on stdout. The cap is gone; this panel is
@@ -2401,7 +2404,7 @@ class MemoryOverlay(_HudOverlay):
 
         from memory.memory_manager import all_entries_for_ui
 
-        hdr = QLabel("🧠  WHAT AI COMPANION REMEMBERS")
+        hdr = QLabel("🧠  WHAT OMNIX AI REMEMBERS")
         hdr.setFont(QFont("Courier New", 12, QFont.Weight.Bold))
         hdr.setStyleSheet(f"color: {C.PRI}; background: transparent;")
         self._lay.addWidget(hdr)
@@ -2503,7 +2506,7 @@ class MemoryOverlay(_HudOverlay):
 
 
 class ClipboardPanel(QWidget):
-    """Floating panel shown when text is copied — offers quick AI Companion actions."""
+    """Floating panel shown when text is copied — offers quick OMNIX AI actions."""
 
     action_requested = pyqtSignal(str)
     _W, _H = 326, 112
@@ -3035,7 +3038,7 @@ class RemoteKeyOverlay(QWidget):
         self._qr_label.setStyleSheet(
             "color: #00ff88; background: #001a0d; border-radius: 10px;"
         )
-        self._timer_lbl.setText("Phone connected — AI Companion ready")
+        self._timer_lbl.setText("Phone connected — OMNIX AI ready")
         self._timer_lbl.setStyleSheet(f"color: {C.GREEN}; background: transparent;")
 
     def _refresh_key(self):
@@ -3098,7 +3101,7 @@ class MainWindow(QMainWindow):
 
         # Load customization from config
         _cfg = _read_full_config()
-        self._assistant_name: str = (_cfg.get("assistant_name") or "AI Companion").strip()
+        self._assistant_name: str = (_cfg.get("assistant_name") or "OMNIX AI").strip()
         _display = self._assistant_name.upper()
 
         # Apply the saved UI colour BEFORE panels/stylesheets are built
@@ -3118,7 +3121,7 @@ class MainWindow(QMainWindow):
 
         self.on_text_command   = None
         self.on_remote_clicked = None   # callable: () -> (url, key) | None
-        self.on_interrupt      = None   # callable: () -> None — stop AI Companion mid-speech
+        self.on_interrupt      = None   # callable: () -> None — stop OMNIX AI mid-speech
         self.on_voice_change   = None   # callable: () -> None — rebuild session with new voice
         self.on_audio_device_change = None  # callable: () -> None — reopen audio streams
         self.on_noise_suppression_change = None  # callable: (enabled: bool) -> None
@@ -3198,7 +3201,7 @@ class MainWindow(QMainWindow):
         # inventing a second mechanism means the avatar, the camera and a video
         # can never be on screen at once.
         self._video_split = False        # is the sound a separate stream?
-        self._video_auto_muted = False   # did AI Companion close the mic, or the user?
+        self._video_auto_muted = False   # did OMNIX AI close the mic, or the user?
         # A plain flag rather than reading the widget. video_is_playing() is
         # called from plugin threads, and reading a widget's state from one is
         # not something to rely on; an attribute is.
@@ -3230,7 +3233,7 @@ class MainWindow(QMainWindow):
             return b
 
         # Muted is the default and the button says so, because a soundtrack
-        # talking over AI Companion is the one way this feature could make the
+        # talking over OMNIX AI is the one way this feature could make the
         # assistant worse rather than better.
         self._video_mute_btn = _vid_btn("🔇  SOUND OFF")
         self._video_mute_btn.clicked.connect(self._toggle_video_mute)
@@ -3567,7 +3570,7 @@ class MainWindow(QMainWindow):
     def _sync_mic_for_video(self) -> None:
         """Close the microphone while the video is making sound.
 
-        AI Companion subtracts its OWN output from the microphone — that is what
+        OMNIX AI subtracts its OWN output from the microphone — that is what
         core/echo.py does — but a video plays through a different output
         entirely, so the guard has never heard of it and the assistant answers
         the film. There is no arrangement in which an open microphone and a
@@ -3575,7 +3578,7 @@ class MainWindow(QMainWindow):
 
         So the microphone closes for exactly as long as the sound is on, and
         opens again by itself the moment it goes off or the video is closed.
-        Only if AI Companion closed it: a microphone the user muted themselves stays
+        Only if OMNIX AI closed it: a microphone the user muted themselves stays
         muted, and pressing the mute key during a video hands the decision back
         to them for good.
         """
@@ -3640,7 +3643,7 @@ class MainWindow(QMainWindow):
     @staticmethod
     def _build_ai_companion_icon(out_path: Path) -> bool:
         """
-        Render a AI Companion arc-reactor icon at 4× resolution and downsample
+        Render a OMNIX AI arc-reactor icon at 4× resolution and downsample
         for crisp results at all sizes. Saves a multi-res .ico to out_path.
         Returns True on success.
         """
@@ -3753,7 +3756,7 @@ class MainWindow(QMainWindow):
             sc.TargetPath       = target
             sc.Arguments        = f'"{args}"'
             sc.WorkingDirectory = work_dir
-            sc.Description      = "AI Companion AI Assistant"
+            sc.Description      = "OMNIX AI desktop assistant"
             sc.IconLocation     = icon_loc
             sc.save()
             return
@@ -3768,7 +3771,7 @@ class MainWindow(QMainWindow):
             f'sc.TargetPath = "{target}"',
             f'sc.Arguments = Chr(34) & "{args}" & Chr(34)',
             f'sc.WorkingDirectory = "{work_dir}"',
-            'sc.Description = "AI Companion AI Assistant"',
+            'sc.Description = "OMNIX AI desktop assistant"',
             f'sc.IconLocation = "{icon_loc}"',
             'sc.Save',
         ])
@@ -3891,14 +3894,14 @@ class MainWindow(QMainWindow):
             if _os == "Windows":
                 pythonw  = python.parent / "pythonw.exe"
                 target   = str(pythonw if pythonw.exists() else python)
-                lnk      = str(desktop / "AI Companion.lnk")
+                lnk      = str(desktop / "OMNIX AI.lnk")
                 icon_loc = str(ico_path) if ico_path.exists() else f"{target},0"
                 self._create_lnk_windows(lnk, target, str(script),
                                          str(script.parent), icon_loc)
 
             # ── macOS — proper .app bundle (no Terminal window) ───────────────
             elif _os == "Darwin":
-                app     = desktop / "AI Companion.app"
+                app     = desktop / "OMNIX AI.app"
                 mac_dir = app / "Contents" / "MacOS"
                 res_dir = app / "Contents" / "Resources"
                 mac_dir.mkdir(parents=True, exist_ok=True)
@@ -3924,7 +3927,7 @@ class MainWindow(QMainWindow):
                     '  <key>CFBundleExecutable</key><string>AICompanion</string>\n'
                     '  <key>CFBundleIdentifier</key>'
                     '<string>com.aicompanion.assistant</string>\n'
-                    '  <key>CFBundleName</key><string>AI Companion</string>\n'
+                    '  <key>CFBundleName</key><string>OMNIX AI</string>\n'
                     '  <key>CFBundlePackageType</key><string>APPL</string>\n'
                     '  <key>CFBundleVersion</key><string>1.0</string>\n'
                     '</dict></plist>\n'
@@ -3962,10 +3965,10 @@ class MainWindow(QMainWindow):
                         png_path = ico_path  # fallback to .ico
 
                 icon_line = f"Icon={png_path}\n" if png_path.exists() else ""
-                desk = desktop / "AI Companion.desktop"
+                desk = desktop / "OMNIX AI.desktop"
                 desk.write_text(
                     "[Desktop Entry]\n"
-                    "Name=AI Companion\n"
+                    "Name=OMNIX AI\n"
                     f"Exec={python} {script}\n"
                     f"Path={script.parent}\n"
                     "Type=Application\n"
@@ -4137,7 +4140,7 @@ class MainWindow(QMainWindow):
         self._title_lbl.setStyleSheet(f"color: {C.PRI}; background: transparent;")
         mid.addWidget(self._title_lbl)
         _sub_text = ("A Friendly Assistant"
-                     if _disp in ("AI Companion", "AI Companion")
+                     if _disp == "OMNIX AI"
                      else "Personal AI Assistant")
         self._sub_lbl = QLabel(_sub_text)
         self._sub_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -4259,7 +4262,7 @@ class MainWindow(QMainWindow):
         self._dashboard_status.setStyleSheet(f"color: {C.GREEN}; background: transparent; border: none;")
         sr.addWidget(self._dashboard_status)
         sr.addStretch()
-        sr.addWidget(QLabel("AI COMPANION  /  COMMAND CENTER"))
+        sr.addWidget(QLabel("OMNIX AI  /  COMMAND CENTER"))
         sr.itemAt(sr.count() - 1).widget().setStyleSheet(f"color: {C.TEXT_DIM}; background: transparent; border: none;")
         root.addWidget(status)
 
@@ -4855,7 +4858,7 @@ class MainWindow(QMainWindow):
     # while translating the tag would mean a table per language, which is worse.
     # A shape carries it in every language, and shape plus colour still reads
     # for someone who cannot separate red from amber. What the marks mean
-    # arrives the way everything else does: AI Companion says it out loud.
+    # arrives the way everything else does: OMNIX AI says it out loud.
     _REVIEW_MARKS = {"serious": ("RED", "▲"), "caution": ("ACC2", "●"), "note": ("PRI_DIM", "·")}
 
     @staticmethod
@@ -4930,7 +4933,7 @@ class MainWindow(QMainWindow):
     # An interactive twin of the content panel. The plugin only ever hands over
     # questions; everything about asking, marking and reporting happens here,
     # and the finished result is pushed back into the conversation the same way
-    # a dropped file is — as a message AI Companion reads and responds to. That keeps
+    # a dropped file is — as a message OMNIX AI reads and responds to. That keeps
     # the tool call short (it returns the moment the board is up) and leaves the
     # talking to the assistant, in the user's own language.
 
@@ -5137,7 +5140,7 @@ class MainWindow(QMainWindow):
         elif verdict is False:
             mark, colour = "✕  " + str(q.get("answer", "")), C.RED
         else:
-            # Open answers and near-miss gap-fills are AI Companion's to judge. Saying
+            # Open answers and near-miss gap-fills are OMNIX AI's to judge. Saying
             # so is honest; marking it wrong here would be a guess.
             mark, colour = "…  noted — I'll go over this one with you", C.ACC2
         note = q.get("note") or ""
@@ -5172,7 +5175,7 @@ class MainWindow(QMainWindow):
 
         self._log.append_log(f"QUIZ: {topic or 'quiz'} — {right}/{total} correct")
 
-        # Hand it back to AI Companion as a message, not as a tool return: the tool
+        # Hand it back to OMNIX AI as a message, not as a tool return: the tool
         # call ended minutes ago. This is the same channel a dropped file uses.
         lines = [f"[QUIZ_DONE] topic={topic or 'general'} | "
                  f"auto-marked {right}/{total} correct"
@@ -5465,7 +5468,7 @@ class MainWindow(QMainWindow):
                               else "◉  HUD: REACTOR CORE")
         self._hud_btn.setStyleSheet(style)
         self._hud_btn.setToolTip(
-            "An animated head that speaks your words and shows what AI Companion is "
+            "An animated head that speaks your words and shows what OMNIX AI is "
             "doing. Tap to switch to the reactor core."
             if face else
             "A reactor core that turns with the state and moves with your voice. "
@@ -5620,7 +5623,7 @@ class MainWindow(QMainWindow):
             self._customize_overlay.hide()
         cw = self.centralWidget()
         ov = CustomizeOverlay(
-            cfg.get("assistant_name", "AI Companion") or "AI Companion",
+            cfg.get("assistant_name", "OMNIX AI") or "OMNIX AI",
             cfg.get("user_name", ""),
             cfg.get("ui_color", "") or DEFAULT_UI_COLOR,
             cfg.get("voice_name", ""),
@@ -5647,11 +5650,11 @@ class MainWindow(QMainWindow):
     def _apply_name_update(self, name: str, user_name: str, ui_color: str = "",
                            voice: str = ""):
         """Update all name/theme-dependent UI elements and persist to config."""
-        self._assistant_name = name.strip() or "AI Companion"
+        self._assistant_name = name.strip() or "OMNIX AI"
         display = self._assistant_name.upper()
         self.setWindowTitle(f"{display} — {APP_VERSION}")
         self._title_lbl.setText(display)
-        if display in ("AI Companion", "AI Companion"):
+        if display == "OMNIX AI":
             self._sub_lbl.setText("Your voice AI assistant")
         else:
             self._sub_lbl.setText("Personal AI Assistant")
@@ -5928,7 +5931,7 @@ class MainWindow(QMainWindow):
             self._overlay.hide()
             self._overlay = None
         self._apply_state("LISTENING")
-        self._assistant_name = _read_full_config().get("assistant_name", "AI Companion") or "AI Companion"
+        self._assistant_name = _read_full_config().get("assistant_name", "OMNIX AI") or "OMNIX AI"
         self._log.append_log(f"SYS: Initialised. OS={os_name.upper()}. {self._assistant_name} online.")
 
 
@@ -5954,7 +5957,7 @@ class AICompanionUI:
         except Exception:
             import traceback as _tb
             _tb.print_exc()
-            raise RuntimeError("AI Companion could not start its main interface")
+            raise RuntimeError("OMNIX AI could not start its main interface")
         self.root = _RootShim(self._app)
         self._win.show()
 
@@ -6107,7 +6110,7 @@ class AICompanionUI:
 
     def push_visemes(self, frames, hop: float, at: float) -> None:
         """Thread-safe: post a schedule of (level, openness, width) mouth frames
-        for AI Companion's own speech. `at` is the wall-clock time the batch begins to
+        for OMNIX AI's own speech. `at` is the wall-clock time the batch begins to
         sound, not the time of the call. See HudCanvas.push_visemes()."""
         try:
             self._win.hud.push_visemes(frames, hop, at)
@@ -6144,7 +6147,7 @@ class AICompanionUI:
 
         `grade(question, given)` decides each answer — the plugin supplies it so
         the marking rules live with the questions rather than being duplicated
-        here. Returning None from it means "AI Companion should judge this one", which
+        here. Returning None from it means "OMNIX AI should judge this one", which
         is how open answers and near-miss gap-fills are handled.
 
         Returns immediately: the user answers at their own pace and the finished
@@ -6185,7 +6188,7 @@ class AICompanionUI:
         together and kept in step.
 
         Muted by default, and that is a decision rather than a default: a
-        soundtrack talking over AI Companion is the one way this could make the
+        soundtrack talking over OMNIX AI is the one way this could make the
         assistant worse. The user turns sound on from the header button or by
         asking, and closes it the same two ways.
         """

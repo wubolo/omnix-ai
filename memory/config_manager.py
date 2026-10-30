@@ -82,8 +82,8 @@ def is_configured() -> bool:
 
 
 def get_assistant_name() -> str:
-    """Return the configured assistant name, or 'AI Companion' if not set."""
-    return load_api_keys().get("assistant_name", "AI Companion") or "AI Companion"
+    """Return the configured assistant name, or 'OMNIX AI' if not set."""
+    return load_api_keys().get("assistant_name", "OMNIX AI") or "OMNIX AI"
 
 
 def get_user_name() -> str:
@@ -100,7 +100,7 @@ def save_assistant_config(assistant_name: str, user_name: str) -> None:
             data = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
         except Exception:
             data = {}
-    data["assistant_name"] = assistant_name.strip() or "AI Companion"
+    data["assistant_name"] = assistant_name.strip() or "OMNIX AI"
     data["user_name"] = user_name.strip()
     CONFIG_FILE.write_text(json.dumps(data, indent=4), encoding="utf-8")
 
@@ -171,7 +171,7 @@ def get_hud_style() -> str:
     """Which centrepiece the HUD draws: the animated head, or the reactor core.
 
     Taste, not capability — both render in the same software painter and cost
-    about the same. Defaults to the head because that is what AI Companion shipped
+    about the same. Defaults to the head because that is what OMNIX AI shipped
     with; anyone who preferred the older look can switch back in ⚙ and the
     choice survives a restart.
     """

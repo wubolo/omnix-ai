@@ -1,6 +1,6 @@
 """
 BackgroundMonitor — user-configured topic watching.
-Checks DDG news once per day per topic; alerts AI Companion when a new headline appears.
+Checks DDG news once per day per topic; alerts OMNIX AI when a new headline appears.
 No crypto, no finance, no uninvited tracking.
 """
 import hashlib

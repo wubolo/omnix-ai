@@ -1,4 +1,4 @@
-# Патч AI Companion: тема, голоса Fish Audio, MCP
+# Патч OMNIX AI: тема, голоса Fish Audio, MCP
 
 Файлы (кладутся рядом с ui_modern.py / ui_panels.py):
 - `glass_theme.py` — QSS «жидкое стекло», плавная смена страниц, скользящий индикатор вкладок (PyQt6).

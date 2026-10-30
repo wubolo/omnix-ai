@@ -547,7 +547,7 @@ class _BrowserSession:
             try:
                 self._context = await engine_obj.launch_persistent_context(profile, **kwargs)
             except Exception as e:
-                print(f"[Browser] Firefox real profile failed ({e}), using AI Companion profile")
+                print(f"[Browser] Firefox real profile failed ({e}), using OMNIX AI profile")
                 ai_companion = str(Path.home() / ".ai_companion_profiles" / "firefox_ai_companion")
                 Path(ai_companion).mkdir(parents=True, exist_ok=True)
                 self._context = await engine_obj.launch_persistent_context(ai_companion, **kwargs)
@@ -609,16 +609,16 @@ class _BrowserSession:
 
         # The real profile could not be opened (browser already open / locked
         # profile / newer Chrome versions block the real profile under
-        # automation). Fall back to a persistent AI Companion automation profile —
+        # automation). Fall back to a persistent OMNIX AI automation profile —
         # accounts logged in here once stay logged in on later sessions too.
         ai_companion_profile = str(Path.home() / ".ai_companion_profiles" / self.browser_name)
         Path(ai_companion_profile).mkdir(parents=True, exist_ok=True)
-        print(f"[Browser] Retrying with AI Companion profile: {ai_companion_profile}")
+        print(f"[Browser] Retrying with OMNIX AI profile: {ai_companion_profile}")
 
         try:
             self._context = await engine_obj.launch_persistent_context(ai_companion_profile, **kwargs)
             self._page = await self._adopt_page()
-            print(f"[Browser] ✅ Launched [{label}] with AI Companion profile "
+            print(f"[Browser] ✅ Launched [{label}] with OMNIX AI profile "
                   f"(sign-ins persist across sessions)")
         except Exception as e2:
             raise RuntimeError(f"Could not launch {self.browser_name}: {e2}") from e2

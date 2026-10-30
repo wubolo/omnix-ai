@@ -1,22 +1,22 @@
-# 🤖 AI Companion
+# 🤖 OMNIX AI
 
-### Ваш голосовой ИИ-компаньон для компьютера · Your voice-powered AI companion for desktop
+### Ваш голосовой ИИ-компаньон для компьютера · Your voice-powered desktop assistant
 
-[⬇️ Скачать AICompanion.exe для Windows](https://github.com/wubolo/ai-companion/raw/refs/heads/main/AICompanion.exe)
+[⬇️ Скачать AICompanion.exe для Windows](https://github.com/wubolo/omnix-ai/raw/refs/heads/main/AICompanion.exe)
 
 **Русский**
 
-AI Companion — настольный голосовой помощник с живым аватаром. Общайтесь с ним голосом, получайте ответы вслух и поручайте повседневные задачи за компьютером. Компаньон помогает работать с экраном и приложениями, запоминает полезные сведения, расширяется плагинами и позволяет выбрать микрофон, наушники и голос. Для важных действий требуется подтверждение; настройки и память хранятся на вашем устройстве.
+OMNIX AI — настольный голосовой помощник с живым аватаром. Общайтесь с ним голосом, получайте ответы вслух и поручайте повседневные задачи за компьютером. Компаньон помогает работать с экраном и приложениями, запоминает полезные сведения, расширяется плагинами и позволяет выбрать микрофон, наушники и голос. Для важных действий требуется подтверждение; настройки и память хранятся на вашем устройстве.
 
 **English**
 
-AI Companion is a voice-first desktop assistant with an animated avatar. Talk naturally, hear spoken replies, and ask it to help with everyday tasks on your computer. It can work with your screen and apps, remember useful details, grow through plugins, and adapt to your microphone, speakers, and preferred voice. Important actions require your confirmation, while settings and memory stay on your device.
+OMNIX AI is a voice-first desktop assistant with an animated avatar. Talk naturally, hear spoken replies, and ask it to help with everyday tasks on your computer. It can work with your screen and apps, remember useful details, grow through plugins, and adapt to your microphone, speakers, and preferred voice. Important actions require your confirmation, while settings and memory stay on your device.
 
 > 🎙️ Natural voice chat · 👀 Screen-aware help · 🖥️ Desktop actions · 🧠 Personal memory · 🧩 Extensible plugins
 
 ---## ✨ Overview
 
-AI Companion is a real-time voice AI assistant with a holographic avatar, lip-sync, local wake word, plugin system and full computer control. It hears you, sees your screen, speaks back and does things on your machine.
+OMNIX AI is a real-time voice AI assistant with a holographic avatar, lip-sync, local wake word, plugin system and full computer control. It hears you, sees your screen, speaks back and does things on your machine.
 
 ---
 
@@ -38,12 +38,12 @@ AI Companion is a real-time voice AI assistant with a holographic avatar, lip-sy
 | 🚀 Faster Live Engine | Runs on **Gemini 3.1 Flash Live** — roughly 2× faster time-to-first-word than the previous model |
 | 🧩 Self-Describing Skills | Every bundled skill declares its own `TOOL` dict + handler and is auto-discovered at launch — adding one is a single file |
 | 🧠 Recallable Memory | No size limit and nothing silently forgotten — the prompt carries what fits, the rest is looked up on demand from a local search |
-| 👁️ Memory Panel | See every fact AI Companion has stored about you, when it learned it, and delete any of it in one click |
+| 👁️ Memory Panel | See every fact OMNIX AI has stored about you, when it learned it, and delete any of it in one click |
 | ↩️ Undo | Take back what the assistant did — files it moved, renamed, created or wrote, and settings it changed |
 | ⚠️ Real Confirmation | Shutdown, restart and WiFi wait for a button **you** press — the model cannot confirm its own irreversible actions |
 | 🎧 Audio Device Picker | Choose the microphone and speakers by name, filtered to the short list your OS shows — and measured, so every entry actually works |
 | 🔗 Session Continuity | A dropped connection, a voice change or a device change no longer wipes the conversation |
-| 🧩 Plugin System | Drop a single `.py` file into `plugins/` — AI Companion learns a new skill on next launch |
+| 🧩 Plugin System | Drop a single `.py` file into `plugins/` — OMNIX AI learns a new skill on next launch |
 | 📺 Video on the HUD | Plays YouTube, a local file or any video URL **where the avatar sits** — starts muted, sound on request |
 | 🪜 Model Ladder | Nine Gemini models in one measured order — a quota, a timeout or an outage steps to the next rung instead of failing |
 | 🎙️ Real-time Voice | Gemini Live conversation with locally synthesized Silero Russian speech |
@@ -51,7 +51,7 @@ AI Companion is a real-time voice AI assistant with a holographic avatar, lip-sy
 | 🇷🇺 Russian-First Voice | Russian is the default conversation language, with locally configured Russian Whisper recognition and clearer spoken replies |
 | 🔊 Silero Russian TTS | Silero v5.5 produces Russian speech locally; choose xenia, baya, kseniya, aidar or eugene |
 | 🎨 Live Theming | Recolour the entire HUD from a hue wheel or hex — the avatar retints with it |
-| 〰️ Reactive HUD | Waveform pulses to real audio — your mic while listening, AI Companion while speaking |
+| 〰️ Reactive HUD | Waveform pulses to real audio — your mic while listening, OMNIX AI while speaking |
 | 🎙️ Voice Picker | Choose a Silero Russian speaker from the UI |
 | ♾️ Unlimited Sessions | Sliding-window context compression — one conversation can last for hours |
 | 🖥️ System Control | Launch apps, adjust volume/brightness, WiFi, shortcuts, power — all by voice |
@@ -128,17 +128,17 @@ The default voice is now **Piper** (`piper-tts`, runs on onnxruntime): Russian v
 
 ## 🖥️ v5.9 — new interface
 
-The main interface uses a translucent liquid-glass style and a bottom navigation bar for Chat, Commands, Plugins, Help, Account and Settings. The AI Companion mark opens the home dashboard with command history and quick controls. The legacy menu is no longer exposed; configuration stored as `"ui_style": "classic"` is ignored.
+The main interface uses a translucent liquid-glass style and a bottom navigation bar for Chat, Commands, Plugins, Help, Account and Settings. The OMNIX AI mark opens the home dashboard with command history and quick controls. The legacy menu is no longer exposed; configuration stored as `"ui_style": "classic"` is ignored.
 
 ## 📦 Windows installer and portable app
 
-`packaging\build_installer.bat` builds `outputs\AICompanion-Setup.exe` with NSIS from the already-built portable executable. The portable `outputs\AICompanion.exe` can also be launched directly without installation. The installer is per-user and creates Start-menu / desktop shortcuts. API keys are kept in the local `config\api_keys.json` and are never embedded in either executable.
+`packaging\build_installer.bat` builds `outputs\OMNIX-AI-Setup.exe` with NSIS from the already-built portable executable. The portable `outputs\AICompanion.exe` can also be launched directly without installation. The installer is per-user and creates Start-menu / desktop shortcuts. API keys are kept in the local `config\api_keys.json` and are never embedded in either executable.
 
 ## ⚡ Quick Start
 
 ```bash
 git clone <your-repo-url>
-cd AI-Companion
+cd omnix-ai
 python setup.py        # installs deps for YOUR OS + the browser automation engine
 python main.py
 ```
@@ -169,7 +169,7 @@ The first launch downloads the Whisper `base` speech model (about 150 MB) and th
 ## 🗂️ Project Structure
 
 ```
-AI Companion/
+OMNIX AI/
 ├── main.py                   # Core loop — Gemini Live session, audio I/O, viseme extraction, tool dispatch
 ├── ui.py                     # PyQt6 HUD — avatar canvas, waveform, log panel, settings drawer, camera feed
 ├── setup.py                  # OS-aware installer (skips wrong-OS dependencies, checks your Python)
@@ -223,7 +223,7 @@ AI Companion/
 
 ## 🔒 Your Data
 
-Everything stays on your machine. There is no AI Companion server, no telemetry and no account.
+Everything stays on your machine. There is no OMNIX AI server, no telemetry and no account.
 
 | What | Where | Notes |
 |---|---|---|

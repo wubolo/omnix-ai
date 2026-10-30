@@ -1,5 +1,5 @@
 """
-Text-to-Speech engines for AI Companion.
+Text-to-Speech engines for OMNIX AI.
 
 EdgeTTS     – free Microsoft TTS (internet required, no API key)
 Kokoro      – fully offline neural TTS (~330 MB model)

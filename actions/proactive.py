@@ -8,14 +8,14 @@ from datetime import datetime
 
 class ProactiveEngine:
     """
-    Decides when AI Companion should speak unprompted and builds a context-rich prompt.
+    Decides when OMNIX AI should speak unprompted and builds a context-rich prompt.
 
     Improvements over 1.0:
       - Time-of-day awareness  (morning / afternoon / evening / night)
       - Monitor-topic awareness (what the user is tracking)
       - Recent-session context  (last few turns of the current conversation)
       - Non-repetitive          (rotates context focus to avoid same opener)
-      - Smarter silence gate    (doesn't fire while AI Companion is speaking)
+      - Smarter silence gate    (doesn't fire while OMNIX AI is speaking)
 
     Defaults:
       min_silence_secs  — 900 s  (15 min) user must be silent before any check

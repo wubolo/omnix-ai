@@ -13,4 +13,4 @@ if not exist "outputs\AICompanion.exe" (
 )
 "%NSIS%" "work\project\AI-Companion\packaging\portable_installer.nsi"
 if errorlevel 1 exit /b 1
-echo Created: %CD%\outputs\AICompanion-Setup.exe
+echo Created: %CD%\outputs\OMNIX-AI-Setup.exe

@@ -1,1 +1,1 @@
-"""Optional glass, memory and MCP integrations for AI Companion."""
+"""Optional glass, memory and MCP integrations for OMNIX AI."""

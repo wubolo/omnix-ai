@@ -1,5 +1,5 @@
 """
-ui_modern.py — the AI Companion glass interface.
+ui_modern.py — the OMNIX AI glass interface.
 
 The app uses a liquid-glass surface, top title/mic controls, and bottom section
 navigation. All existing assistant features remain connected to the same shell.
@@ -41,7 +41,7 @@ from ui import MainWindow
 from memory.config_manager import (AVAILABLE_VOICES, get_ui_setting, get_voice,
                                    save_plugin_enabled, save_ui_setting, save_voice)
 
-APP_TITLE = "AI Companion"
+APP_TITLE = "OMNIX AI"
 APP_BUILD = "6.5"
 
 
@@ -693,7 +693,7 @@ class ModernShell(QWidget):
     # ── construction helpers ──────────────────────────────────────────────────
     def _title(self) -> str:
         name = (getattr(self._win, "_assistant_name", "") or "").strip()
-        return name if name and name != "AI Companion" else APP_TITLE
+        return name if name and name != "OMNIX AI" else APP_TITLE
 
     def refresh_title(self) -> None:
         self._name_lbl.setText(self._title())
@@ -761,7 +761,7 @@ class ModernShell(QWidget):
         minimize.clicked.connect(self._win.showMinimized)
         row.addWidget(minimize)
         avatar = Logo(38)
-        avatar.setToolTip("AI Companion")
+        avatar.setToolTip("OMNIX AI")
         avatar.activated.connect(lambda: self._select(0))
         row.addWidget(avatar)
         self._name_lbl = QLabel(self._title())
@@ -807,14 +807,14 @@ class ModernShell(QWidget):
         welcome = QLabel(f"Добро пожаловать в {self._title()}!")
         self._welcome_label = welcome
         welcome.setFont(_font(21, True))
-        subtitle = QLabel("Новости, обновления и полезные возможности твоего AI Companion")
+        subtitle = QLabel("Новости, обновления и полезные возможности твоего OMNIX AI")
         subtitle.setFont(_font(13))
         subtitle.setStyleSheet(f"color:{P.DIM};")
         hero_lay.addWidget(welcome)
         hero_lay.addWidget(subtitle)
         lay.addWidget(hero)
 
-        news_title = QLabel("Новости AI Companion")
+        news_title = QLabel("Новости OMNIX AI")
         news_title.setFont(_font(19, True))
         lay.addWidget(news_title)
         news_grid = QGridLayout()
@@ -823,7 +823,7 @@ class ModernShell(QWidget):
         news_grid.setVerticalSpacing(12)
         self._news_cards = []
         items = [
-            ("ОБНОВЛЕНИЕ", "Новый домашний экран", "Новости и функции AI Companion собраны в одной ленте. Интерфейс стал светлым и плоским."),
+            ("ОБНОВЛЕНИЕ", "Новый домашний экран", "Новости и функции OMNIX AI собраны в одной ленте. Интерфейс стал светлым и плоским."),
             ("FISH AUDIO", "Голос одним нажатием", "Выбери JARVIS, MiSide или Рика, затем активируй встроенный ключ Fish Audio в настройках."),
             ("MCP", "Подключай инструменты", "Добавляй MCP-серверы на странице настроек и используй их инструменты прямо в диалоге."),
             ("ПАМЯТЬ", "История и факты", "Разговоры сохраняются локально. Ассистент может находить полезные сведения из прошлых сессий."),
@@ -1097,7 +1097,7 @@ class ModernShell(QWidget):
 
     def _page_help(self) -> QWidget:
         pg, lay = self._scroll_page()
-        intro, il = _card("Как пользоваться AI Companion")
+        intro, il = _card("Как пользоваться OMNIX AI")
         il.addWidget(self._text(
             "Говори с ассистентом через микрофон или напиши вопрос в разделе «Чат». "
             "Для команд Windows открой «Команды» или произнеси просьбу обычными словами.", px=14))
@@ -1915,7 +1915,9 @@ class ModernWindow(MainWindow):
             except RuntimeError:
                 pass
         self._apply_state("LISTENING")
-        self._assistant_name = cfg.get("assistant_name") or "AI Companion"
+        self._assistant_name = cfg.get("assistant_name") or "OMNIX AI"
+        if self._assistant_name.strip().casefold() == "ai companion":
+            self._assistant_name = "OMNIX AI"
         self._log_sig.emit(f"SYS: Ключ сохранён. ОС: {os_name}. Подключаюсь…")
 
     def resizeEvent(self, e):

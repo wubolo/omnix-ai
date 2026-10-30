@@ -1,5 +1,5 @@
 """
-dashboard/server.py — AI Companion Local HTTP Dashboard
+dashboard/server.py — OMNIX AI Local HTTP Dashboard
 
 Plain HTTP on port 8000 (no SSL warnings, no firewall issues).
 Security at the application layer: AES-256-CBC with session-key-derived key.
@@ -44,8 +44,8 @@ MAX_UPLOAD_MB = 500
 def _make_uploads_dir() -> Path:
     """Return (and create) the cross-platform uploads folder."""
     for candidate in [
-        Path.home() / "Downloads" / "AI Companion Uploads",
-        Path.home() / "Documents" / "AI Companion Uploads",
+        Path.home() / "Downloads" / "OMNIX AI Uploads",
+        Path.home() / "Documents" / "OMNIX AI Uploads",
         BASE_DIR / "uploads",
     ]:
         try:
@@ -112,8 +112,8 @@ def _ensure_network_access(port: int) -> None:
     if sys.platform == "win32":
         import ctypes, time
 
-        port_rule = f"AI Companion Dashboard Port {port}"
-        prog_rule  = "AI Companion Dashboard Python"
+        port_rule = f"OMNIX AI Dashboard Port {port}"
+        prog_rule  = "OMNIX AI Dashboard Python"
         py_exe     = sys.executable
 
         def _netsh_rule_exists(name: str) -> bool:
@@ -217,7 +217,7 @@ def _ensure_network_access(port: int) -> None:
                 print("[Dashboard] Refresh your phone browser to connect.")
             else:
                 print("[Dashboard] Setup was not allowed.")
-                print("[Dashboard] Phone connections may fail until AI Companion is run as Administrator.")
+                print("[Dashboard] Phone connections may fail until OMNIX AI is run as Administrator.")
         except Exception as e:
             print(f"[Dashboard] Firewall setup error: {e}")
         finally:
@@ -396,8 +396,8 @@ def _ensure_certs() -> bool:
         key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
 
         who = x509.Name([
-            x509.NameAttribute(NameOID.COMMON_NAME, "AI Companion Dashboard"),
-            x509.NameAttribute(NameOID.ORGANIZATION_NAME, "AI Companion"),
+            x509.NameAttribute(NameOID.COMMON_NAME, "OMNIX AI Dashboard"),
+            x509.NameAttribute(NameOID.ORGANIZATION_NAME, "OMNIX AI"),
         ])
 
         # The SAN has to cover every address the phone might use: the LAN IP the
@@ -599,7 +599,7 @@ class DashboardServer:
   h2{color:#f87171;margin-bottom:12px}p{color:#5e6a7e;font-size:14px}
 </style></head>
 <body><div><h2>Link Expired</h2>
-<p>Press <strong style="color:#dde3ed">Remote Control</strong> in AI Companion to get a new QR code.</p>
+<p>Press <strong style="color:#dde3ed">Remote Control</strong> in OMNIX AI to get a new QR code.</p>
 </div></body></html>""")
 
             del self._pending_keys[key]
@@ -630,7 +630,7 @@ class DashboardServer:
   localStorage.setItem('ai_companion_device_token','{dev_tok}');
   setTimeout(function(){{location.replace('/')}},400);
 </script>
-<p>Connecting to AI Companion…</p>
+<p>Connecting to OMNIX AI…</p>
 </body></html>""")
 
         @app.post("/api/device-login")
@@ -880,5 +880,5 @@ class DashboardServer:
 
         proto = "https" if use_ssl else "http"
         print(f"[Dashboard] {proto}://{self._ip}:{PORT}")
-        print("[Dashboard] Press 'Remote Control' in AI Companion UI to get the QR code.")
+        print("[Dashboard] Press 'Remote Control' in OMNIX AI UI to get the QR code.")
         await uvicorn.Server(cfg).serve()
