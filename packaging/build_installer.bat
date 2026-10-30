@@ -7,8 +7,8 @@ if not exist "%NSIS%" (
   echo NSIS was not found. Install it with: winget install --id NSIS.NSIS -e
   exit /b 1
 )
-if not exist "outputs\AICompanion.exe" (
-  echo Build outputs\AICompanion.exe first.
+if not exist "outputs\OMNIX.exe" (
+  echo Build outputs\OMNIX.exe first.
   exit /b 1
 )
 "%NSIS%" "work\project\AI-Companion\packaging\portable_installer.nsi"

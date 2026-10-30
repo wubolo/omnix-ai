@@ -2,7 +2,7 @@
 
 ### Ваш голосовой ИИ-компаньон для компьютера · Your voice-powered desktop assistant
 
-[⬇️ Скачать AICompanion.exe для Windows](https://github.com/wubolo/omnix-ai/raw/refs/heads/main/AICompanion.exe)
+[⬇️ Скачать OMNIX.exe для Windows](https://github.com/wubolo/omnix-ai/raw/refs/heads/main/OMNIX.exe)
 
 **Русский**
 
@@ -132,7 +132,7 @@ The main interface uses a translucent liquid-glass style and a bottom navigation
 
 ## 📦 Windows installer and portable app
 
-`packaging\build_installer.bat` builds `outputs\OMNIX-AI-Setup.exe` with NSIS from the already-built portable executable. The portable `outputs\AICompanion.exe` can also be launched directly without installation. The installer is per-user and creates Start-menu / desktop shortcuts. API keys are kept in the local `config\api_keys.json` and are never embedded in either executable.
+`packaging\build_installer.bat` builds `outputs\OMNIX-AI-Setup.exe` with NSIS from the already-built portable executable. The portable `outputs\OMNIX.exe` can also be launched directly without installation. The installer is per-user and creates Start-menu / desktop shortcuts. API keys are kept in the local `config\api_keys.json` and are never embedded in either executable.
 
 ## ⚡ Quick Start
 
